@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Test</title>
+</head>
+<body>
+<input type="file" id="fileupload" accept="audio/*" />
+<audio id="audio" controls="true" src=""></audio>
+
+<div style="width: 100%; height: 120px; border: 1px solid; overflow-y: hidden; overflow-x: auto">
+    <div id="musicTrack" style="height: 100px"></div>
+</div>
+
+<script src="http://cdnjs.cloudflare.com/ajax/libs/wavesurfer.js/1.3.7/wavesurfer.min.js"></script>
+<script>
+    var TICK_VALUE = 44100/1024; // see why on https://steamcommunity.com/sharedfiles/filedetails/?id=564414295
+    var TICK_SPACE = 10; // in pixels
+
+    var fileInput = document.getElementById('fileupload');
+    fileInput.addEventListener('change', function (event) {
+        var file = this.files[0];
+        var fileUrl = window.URL.createObjectURL(file);
+
+        var wavesurfer = WaveSurfer.create({
+            container: '#musicTrack',
+            waveColor: 'violet',
+            progressColor: 'purple'
+        });
+
+        var audio = document.getElementById('audio');
+        audio.addEventListener('canplaythrough', function () {
+            var WIDTH = (audio.duration * TICK_VALUE);
+            var HEIGHT = 100;
+
+            document.getElementById('musicTrack').style.width = WIDTH + 'px';
+            wavesurfer.load(fileUrl);
+
+//            var canvas = document.getElementById('musicTrack');
+//            var canvasCtx = canvas.getContext("2d");
+//            canvas.setAttribute('width', WIDTH);
+//
+//            var audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+//            var analyser = audioCtx.createAnalyser();
+//
+//            var source = audioCtx.createMediaElementSource(audio);
+//            source.connect(analyser);
+//            analyser.connect(audioCtx.destination);
+//
+//            analyser.fftSize = 2048;
+//            var bufferLength = analyser.fftSize;
+//            var dataArray = new Uint8Array(bufferLength);
+//
+//            canvasCtx.clearRect(0, 0, WIDTH, HEIGHT);
+//
+//            analyser.getByteTimeDomainData(dataArray);
+//
+//            canvasCtx.fillStyle = 'rgb(200, 200, 200)';
+//            canvasCtx.fillRect(0, 0, WIDTH, HEIGHT);
+//
+//            canvasCtx.lineWidth = 2;
+//            canvasCtx.strokeStyle = 'rgb(0, 0, 0)';
+//
+//            canvasCtx.beginPath();
+//
+//            var sliceWidth = WIDTH * 1.0 / bufferLength;
+//            var x = 0;
+//
+//            for(var i = 0; i < bufferLength; i++) {
+//
+//                var v = dataArray[i] / 128.0;
+//                var y = v * HEIGHT/2;
+//
+//                if(i === 0) {
+//                    canvasCtx.moveTo(x, y);
+//                } else {
+//                    canvasCtx.lineTo(x, y);
+//                }
+//
+//                x += sliceWidth;
+//            }
+//
+//            canvasCtx.lineTo(canvas.width, canvas.height/2);
+//            canvasCtx.stroke();
+
+        }, false);
+        audio.src = fileUrl;
+
+
+    }, false);
+</script>
+</body>
+</html>
